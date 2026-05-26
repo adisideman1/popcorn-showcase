@@ -455,7 +455,7 @@
         <ul id="bulletList" style="list-style:none; padding:0; margin:0;"></ul>
       </div>
     </div>
-    <button id="modalClose" style="position:absolute; top:20px; right:28px; background:none; border:none; color:#fff; font-size:36px; cursor:pointer; z-index:10001; line-height:1; pointer-events:auto;">✕</button>
+    <button id="modalClose" onclick="event.stopPropagation(); closeModal();" style="position:absolute; top:20px; right:28px; background:none; border:none; color:#fff; font-size:36px; cursor:pointer; z-index:10001; line-height:1; pointer-events:auto;">✕</button>
   </div>
 
   <script>

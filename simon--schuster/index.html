@@ -226,17 +226,6 @@
     <div class="video-grid video-grid-3">
       
     <div class="video-card video-card--vertical">
-      <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="openLightbox('https://drive.google.com/file/d/1Svbvw63FZErUQux1ezHSn6QOISRMJWMk/preview', 'vertical')">
-        <img src="https://drive.google.com/thumbnail?id=1Svbvw63FZErUQux1ezHSn6QOISRMJWMk&sz=w1280" alt="Icebreaker thumbnail" />
-        <div class="play-btn">&#9654;</div>
-      </div>
-      <div class="card-body">
-        <h3>Icebreaker</h3>
-        <p>Sparks fly when a competitive figure skater and hockey team captain are forced to share a rink in this TikTok sensation that is perfect for fans of hockey romances like Heated Rivalry.</p>
-      </div>
-    </div>
-
-    <div class="video-card video-card--vertical">
       <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="openLightbox('https://drive.google.com/file/d/1W-mA5JJEA42BLZ_h3jqWXtdrDawhkQfR/preview', 'vertical')">
         <img src="https://drive.google.com/thumbnail?id=1W-mA5JJEA42BLZ_h3jqWXtdrDawhkQfR&sz=w1280" alt="Spy School thumbnail" />
         <div class="play-btn">&#9654;</div>
@@ -247,19 +236,6 @@
       </div>
     </div>
 
-    <div class="video-card video-card--vertical">
-      <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="openLightbox('https://drive.google.com/file/d/101Sah10-DrNk0HMG8XvwdaPRYweEY7_M/preview', 'vertical')">
-        <img src="https://drive.google.com/thumbnail?id=101Sah10-DrNk0HMG8XvwdaPRYweEY7_M&sz=w1280" alt="Choke Point thumbnail" />
-        <div class="play-btn">&#9654;</div>
-      </div>
-      <div class="card-body">
-        <h3>Choke Point</h3>
-        <p>A devastating series of bombings tears through Bangkok. Scores of American citizens are dead. The attacks send shock waves around the world.</p>
-      </div>
-    </div>
-    </div>
-    <div class="video-grid video-grid-2">
-      
     <div class="video-card">
       <div class="thumb-wrap" style="aspect-ratio:16/9" onclick="openLightbox('https://drive.google.com/file/d/13XL7gaOWX370vlm2qFnUDFCghRRaSg53/preview', 'horizontal')">
         <img src="https://drive.google.com/thumbnail?id=13XL7gaOWX370vlm2qFnUDFCghRRaSg53&sz=w1280" alt="The Fourth Option thumbnail" />
@@ -282,6 +258,9 @@
       </div>
     </div>
     </div>
+    <div class="video-grid video-grid-2">
+      
+    </div>
   </main>
 
   <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
@@ -301,7 +280,7 @@
       var inner = document.getElementById('lightbox-inner');
       var iframe = document.getElementById('lightbox-iframe');
       inner.className = 'lightbox-inner ' + orientation;
-      iframe.src = src;
+      iframe.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
     }

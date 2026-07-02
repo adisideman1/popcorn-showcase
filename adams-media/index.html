@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adams Media x Popcorn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #07090f;
+      color: #f0f2f8;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,9,15,0.92);
+      backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 24px 28px;
+      gap: 24px;
+    }
+    nav .client-logo img {
+      max-height: 120px;
+      max-width: 360px;
+      object-fit: contain;
+    }
+    nav .powered-by {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    nav .powered-by span {
+      color: #E5A83B;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    nav .powered-by a img {
+      height: 22px;
+      object-fit: contain;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 60px 32px 80px;
+    }
+    h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      color: #E5A83B;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    /* GRID */
+    .video-grid {
+      display: grid;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+    .video-grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .video-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 768px) {
+      .video-grid-3, .video-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* CARD */
+    .video-card {
+      background: #0e1018;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(229,168,59,0.15);
+    }
+    .video-card--vertical {
+      max-width: 260px;
+      justify-self: center;
+    }
+    .thumb-wrap {
+      position: relative;
+      width: 100%;
+      cursor: pointer;
+      background: #161820;
+      overflow: hidden;
+    }
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.2s;
+    }
+    .thumb-wrap:hover img { opacity: 0.85; }
+    .first-frame-placeholder {
+      width: 100%;
+      height: 100%;
+      background: #161820;
+    }
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #E5A83B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #07090f;
+      box-shadow: 0 0 32px rgba(229,168,59,0.5);
+      pointer-events: none;
+    }
+    .thumb-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* LIGHTBOX */
+    .lightbox-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.88);
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-overlay.active {
+      display: flex;
+    }
+    .lightbox-inner {
+      position: relative;
+      width: 90vw;
+      max-height: 90vh;
+    }
+    .lightbox-inner.horizontal {
+      max-width: 960px;
+      aspect-ratio: 16/9;
+    }
+    .lightbox-inner.vertical {
+      max-width: 420px;
+      aspect-ratio: 9/16;
+    }
+    .lightbox-inner iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .card-body {
+      padding: 20px 22px 24px;
+    }
+    .card-body h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #f0f2f8;
+      margin-bottom: 8px;
+    }
+    .card-body p {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: rgba(240,242,248,0.55);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 0.85rem;
+      color: rgba(240,242,248,0.4);
+    }
+    footer a { color: #E5A83B; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="client-logo">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCz/wAARCABEAU4DASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAUGAgQHAwEI/8QAQxAAAQMDAQQHBQQGCQUAAAAAAQACAwQFEQYSITFBBxMUUWFxgRUikaGxMjbB0RY1QnJzsiMzNDdSVHR14YKSosLw/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAECAwQGBQf/xAA1EQACAQMBBAcHAgcAAAAAAAAAAQIDBBEhBRIxQQYTIlFhcZEUQnKBscHh0fAjJDIzRKHx/9oADAMBAAIRAxEAPwD82oiIAiIgC6DpezezaHr5m4qZxk54tbyH5/8ACr+k7N26s7ZM3MEB3A/tO/44/BXxY5vkdt0d2dj+bqL4f1+yCIixnZnN9TU3ZdQVIAw2QiQevH55UUrbrmmw+lqgOIMbj8x+KqSzxeUfKdq0OovKkPHPrqERFJ5gREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBbNvoZbjXR00I9553nk0cyVrLoGlrN7OoevmbipnGTni1vIfn/AMKsnhHq7LsHfV1D3Vq/L8kvR0kVDRx00IwyMYHj4r2RReoLu2024uaR18nuxjx7/RYuJ9MqVKdrRc5aRijehq4aieaKJ4c+Bwa/HI4yvZUbRta5l5lhe4ntLCck8XDf9Mq8o1hmrsy99uodbjDy1+/lgh9VU3adPzEDLoiJB6cfkSudLrU8Tainkhf9mRpafIjC5PLG6KV8bxhzCWnzCyQOV6T0N2tCsuax6f8ATFERXOSCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCItigopbjWx00I95548gOZKFoQlOShFZbJnSlm7dWdrmbmngO4H9p3d6cfgr4vCio4qCjjpoRhkYx595XusDeWfVNmWEbGgqfvPVvx/BhNKyCF8srg1jAXOJ5Bc0vNzfdri+d2Qwe7G3/C1TmsLz1j/ZsDvdacykczyb6KqLJFczk+kG0euqezU32Y8fF/j6mzbqo0Vyp6jlG8E+XP5LqgIIBByCuRLpen6vtlippCcua3Yd5jcomjY6L18SqUH5r6P7Ekucanpuy6gqABhshEg9ePzyujqoa5pvepaoDiDG4/Mfiog9T1ukVDrLNzXutP7fcqKIpy2aVrbjA2dzmU8Tt7S/eSO8BZG8Hz+3tqtzLcoxyyDRWt+hZQz+jrmOd3OjIHxyVXq+3VNtqjT1DNl/EEbw4d4RNMz3Ozrq1W9Whhev0NVSFktbbvcOzOlMQ2C7aAzwUjRaNrqmESTSMp9oZDXZLvUclJ2PT9XaL6JJC2SF0bgHs5HduPcockb1nsm4dWnKtTe42s+X1RF3zTTLPQNqG1LpSXhmyWY4gnv8FX1fNa/qOP+O36OVbtWma26RCZpbDCeD3/ALXkFEXplmTaezsXvUWkOSeF+SHRWx2hZdn3a9hd3GMgfVV+52qqtNQIqlo94Za5py13krJpnnXOzbq1jv1oYXyf0NNFO0Gk6u4UMVVHPA1kgyA4nI347llTaQr6ieVjnxxxxuLds594+ATeRMdl3clFxpvtcCARTty0nW0EBmY5tQwcdgHaHovel0VWzQh880cBIzsY2iPNN5ErZV46jpqm8r98eBW0UldrHV2dzeu2XxvOGyM4E93gVjarJV3d7uzta1jdzpHnDR4JlcTXdpXVXqNx73cR6K1foLPs/wBtj2u7YOPqoS6WartErW1DQWP+y9py0ommZrjZl1bQ36sGl++40EVjteh7rebHDcqExStmqezCPJDmkDJcTjAaBzypWDo6pKt/ZaXVtpmuJ3Cna7c53cHc/QK2GedlFHRWOj0RdZ7jWU1Z1NtioXBtTUVT9mOMngM8yRvGO8KSl6OTVW+apsN8or0+nbtSQQ+7JjwGTn5ZTDGUUpEVvt/R9M+1RXK9XSkslNOMwioOZJB3hu781GCclQRWy7aBqaO0PutruNJeaCL+tkpne9H4ub3eqq0MMlROyGFjpJZHBrGNGS4ncAEwDBT2l9OM1D7T26l0HYaR9UMM2tst5cdymn9HEdvijF81JbrXVyN2hTvO25vnvGPmFM6U0xXadffnzPhqaSotExgqqd+3FKN3A9/grJFWyjaYtNBebsaW5XSO1wCMv66TGMgjA3kd5+CiHtDZHNadoAkA96ltM6dqdUXgW6lliilLHP2pc7OB5AqOo6OouFbFSUsTpp5nBjGN4klQSeKK7v6PKOheKe66stdFWY96DO3sHuccjCg9S6VrtL1ELal0U9PUN24KiF20yQeB9R8UwxkhFf8AS1m9nUPaJm4qJxk54tbyH4qA0pZu31vapm5p4DuB4OdyHpx+CvqxTfI7bo7s7/LqL4f1+yCi7/d22m3F7SDPJ7sY8e/0UlLKyCF8sjg1jAXOJ5BUaEyap1OHvBFNHv2TyYOXmT9VVI93ad3KjFUaP9yei8PH5Hym0jXV1MyqfPGwzDbw/O1v717foPWf5qD5/krsBgYCJvs1o9HrJJbybfmyk/oPWf5qD5/krBp61VFopZYJpWSNc/bbs53bsHj5BSyI5Nm1a7ItbWoqtJNPzCh9VU3adPzkDLoiJB6cfkSphYTxNnp5IX/ZkaWnyIwoWhvXNFV6M6T5po5Kug0D7/UUrNuKipGbOGhzXFwHlncqVQtbTXyBtRgNinaH54DDt66TXwy1Fvnigk6uV7CGuzjBV5M4zo/btxq1N55XJaZ4kZY7FLaauaR9b14lb7zdnG/PHj5/FelzpY6i/wBqL2g7Bkd54AI+a09M2OotdTNNVvZ1sjdlrQ7JxkZP0WxfKxtBdrVPIcRh72uPcCAMqvM9umoU7Fb9PcW8tG847S459Tav1bJb7JPPEcSABrT3EnGVAaRu9XUXGSlqZ5JmOYXgvdtEEEc1ZLrQi6WqalDg0yAFruWQchQ2nNPzWmsfUVb49t7erja05zzJ+X1RYwLundS2jSnTzuJa93POfPQ9Na/qOP8Ajt+jl8s0l9lt8AbBR08DWBrDI120QBxwD+S9NX7ItUBkGWCoYXeWDlTUoM1I8QyBpewhjxyyNxTOhf2frL+pU3msRjoufEhrVYZ7fdn1ktf1zpQdtmyRnPqtbXDQbXTvx7wmwD5tP5L5p6wVVvubqqtkZtEFrAHZLieJ+Cz1v+p4P44/lcp941KkMbLq/wANw46NtvitdTf0x926Tyd/MVXb7f6+m1DIyGdzIoCAGDgdwJz3qw6X+7VJ5O/mKpepPvFWfvD6BTHizX2nWqUdmUHTk0+zw+E6S47LSe4ZVKsF+uFXqGOOecvjmLgWchuJGO7grpJ/VP8AIrnOmPvJSebv5SoitGbm2K1SndW0YSaTlr46ot+rGB2m6gkb2FhH/cB+K1dGVcD7SaZrmiZjyXN5kHn+HotzVX3Zq/8Ao/naoWwaft1ytkdSZZ2ztJDwx4Gyc7uXdhF/SRcurHasXRSb3NU3jTL/ANkvUWWqZejc6SrG2eMUudk7sYyOXooTU9ZdDSNp6+ihjjLw5ssZJGQpejorzRXsRtqHTW3vleHOxjh35z6LLV8sTNPvY8jbkc0MHPIOT8souJW7oqdpWnHep8W0+Dfz5PljBlQ181B0E1YgeWOqK8wOcDv2SGkj1Ax6rnrHuje17HFrmnIIOCCrw3+4x3+6/wDoqMszPniOjdLF0qKllipnv9ySjbVPA3Bz3DGT5AfNQHRzUy03SBazE8t6yQxuA5tIIIP/ANyUn0of2qwf7VF9SofQP3+tH8cfQqeZC4G5TWinrel99scwdm9pyAs5FjXuOz8BhWXWuidS6j1TVVofSGnB6uBrqgDZYOG7lnefVVequgsvS1V3FwJZT3SRzwOOz1hDvkStnpD01VU2oai70kTqm2XF3aI6iIbTcu3kEjhvyR3hOQ5ll0Jo2/6b1GJqt1J7PnjdFUsE4dtNION3Pfj0JUR0fWinh6VayFwD47X172c/su2Af/LKiNI6NN3fNX3gT0VlpY3STVH2C4gbg0kHJz4Hu4kLPo6vNLZ9ewyPJjo6nbpyZCPdDvs5PDiG5Kdw7yt3O4T3W6VNfUvL5qiQyOJPfy8hwV+6M7nO7TmprW95dA2ifOwHg07JDsee74Ko6l0zXafvs9FLTS9WHnqXhpIkZncQee5X/QWnKi0aSvtXXsNPVV1FJ1MD9z+ra05cRxAJcPh4ouIfAgOiD7+s/wBPJ+Cq+n6u50V9pprM0uuGS2ENjDzkgg4BBHAlWjog+/rP9PJ+Cy6IjENWVIywVbqOQUxf/jyOHjjPplO4d5jP0aXuSV1Xd7paqCedxkeKqpw4knJO4EcfFb+sba62dFFlpZK2mrnQVjmtmp37bNkh5wD4fgqPW2+8S3mWCrpauS4Pedtr2OdI534q86vtElk6IrLQzFvaI6wmZoIOw9zXu2T4gED0QG1bqWKjt8MELdljWj1PMrZRFqn2ailGnFLuRWNb1UsVFT07HYjmcS/xxjA+a9dF08cdnfMB/SSyEOPgOARFf3Tm49rbbzyjp6IsSIiodSEREAREQHNdRxtj1FWNaMAv2vUgE/VY02oLpSQiKGseGAYAcA7HxBRFnXA+TXFapRuqjpSce0+Dxz8DzF5uIqzU9rk64t2drPLjhYVl0ra9jW1VQ6VrTkA43IiYNZ3FaUXFzeHx1Z70l/udFEIoKtwYNwa4BwHlkblhJerjLVsqX1bzKzOyd2G53HA4IiYRb2qvuqO+8LhqzGqu9fXQ9VU1L5Y852Tjis6S+3KhiEVPVvawcGkBwHlkHCImEQrqup9Ypve78vPqfH3q4vq21LquQytBDT3Z44HBY1d2rq6ERVNS6VgO1g44oiYIdzWaac3h8dXr5mVPe7jSQNhgq3xxs4NGN3Nas88tVO6aZ5fI/e5x5oikrKtUnFQlJtLlk3jqK7EEGtkwfAfktGnqJaWds0DyyRnBw5IiYJncVZtSnNtrhlvQ2qm9XGrp3QT1T5I3Yy0434OV4UldU0MnWU074nHjsnj5jmiJgSr1ZSU3Jtrnl5JH9K7xs47WPPq2/ko2qrKitl6ypmfK/vcc48kRRhGWtdV6qUak214ts9fatd7I9l9od2HrOt6ndjbxjK1ERSaht3C7V11dC6uqHTmCMRR7WPdYOAXnRVtRbq2KrpJTDPEdpjxxaURAY1NTNWVctTUSGSaZ5ke88XOJySpiy611Bp+n7Pb7i+ODiInta9o8g4HHoiIDzvWr77qGMR3K4yTRA5EYAYzP7rQAfVQyIgLNb+kXVNsom0tPdXmJgw3rI2yFo8C4EqPOqb4a+orXXKd1RUxmGR7iDtMP7PgPAIinJGDUtl2rrNWCrt9Q6mnDS3bbjODxG9eEE81LUMnglfFLGdpj2HDmnvBRFBJZpOkzVslJ2c3dwaRjbbGwPx+8Bn14qDnvNxqbY23T1cktK2UziNxz75zl2eOd5+KIpyRg/9k=" alt="Adams Media logo" />
+    </div>
+    <div class="powered-by">
+      <span>Powered by:</span>
+      <a href="https://popcorn.co" target="_blank">
+        <img src="../wordmark-dark.png" alt="Popcorn.co" />
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Adams Media Examples Powered By Popcorn</h1>
+    <div class="video-grid video-grid-3">
+      
+    <div class="video-card video-card--vertical">
+      <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="openLightbox('https://drive.google.com/file/d/1L-h6xaOCCcTFaio76lsEZeID6CTqj7pw/preview', 'vertical')">
+        <img src="https://drive.google.com/thumbnail?id=1L-h6xaOCCcTFaio76lsEZeID6CTqj7pw&sz=w1280" alt="The Modern Witchcraft Book of Astrology thumbnail" />
+        <div class="play-btn">&#9654;</div>
+      </div>
+      <div class="card-body">
+        <h3>The Modern Witchcraft Book of Astrology</h3>
+        <p>Witchcraft meets astrology in this comprehensive guide to the power of the planets tailored specifically for witches so you can incorporate the celestial study into your spells and magical rituals.</p>
+      </div>
+    </div>
+
+    <div class="video-card video-card--vertical">
+      <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="openLightbox('https://drive.google.com/file/d/1TZekrLHuyhuG5A4ZzhwuoBzglr2CATFo/preview', 'vertical')">
+        <img src="https://drive.google.com/thumbnail?id=1TZekrLHuyhuG5A4ZzhwuoBzglr2CATFo&sz=w1280" alt="I Love EPCOT thumbnail" />
+        <div class="play-btn">&#9654;</div>
+      </div>
+      <div class="card-body">
+        <h3>I Love EPCOT</h3>
+        <p>Celebrate your love of EPCOT with this must-have handbook that features everything from its stunning history to its iconic rides and attractions to surprising trivia, behind-the-scenes facts, and more.</p>
+      </div>
+    </div>
+
+    <div class="video-card video-card--vertical">
+      <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="openLightbox('https://drive.google.com/file/d/1iY-WC3z5qRBfm62fkmWuOtBMRudZV1i0/preview', 'vertical')">
+        <img src="https://drive.google.com/thumbnail?id=1iY-WC3z5qRBfm62fkmWuOtBMRudZV1i0&sz=w1280" alt="Murder Before "I Do" thumbnail" />
+        <div class="play-btn">&#9654;</div>
+      </div>
+      <div class="card-body">
+        <h3>Murder Before "I Do"</h3>
+        <p>Cozy mystery meets themed word search puzzles in this interactive and charming whodunit experience that invites you to solve the case as you uncover clues.</p>
+      </div>
+    </div>
+    </div>
+    <div class="video-grid video-grid-2">
+      
+    </div>
+  </main>
+
+  <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-inner" id="lightbox-inner">
+      <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
+      <iframe id="lightbox-iframe" src="" allow="autoplay" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <footer>
+    Made with 🍿 <a href="https://popcorn.co" target="_blank">Popcorn.co</a>
+  </footer>
+
+  <script>
+    function openLightbox(src, orientation) {
+      var overlay = document.getElementById('lightbox');
+      var inner = document.getElementById('lightbox-inner');
+      var iframe = document.getElementById('lightbox-iframe');
+      inner.className = 'lightbox-inner ' + orientation;
+      iframe.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(e) {
+      if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+      var overlay = document.getElementById('lightbox');
+      var iframe = document.getElementById('lightbox-iframe');
+      overlay.classList.remove('active');
+      iframe.src = '';
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+</body>
+</html>

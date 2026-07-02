@@ -172,18 +172,17 @@
       border: none;
       border-radius: 10px;
     }
-    /* Covers the Drive toolbar strip at the top of the iframe */
+    /* Transparent overlay -- blocks the Drive link click without covering the video */
     .drive-block {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       height: 46px;
-      background: #000;
+      background: transparent;
       z-index: 10;
       pointer-events: all;
       cursor: default;
-      border-radius: 10px 10px 0 0;
     }
     .lightbox-close {
       position: absolute;
@@ -198,16 +197,17 @@
     }
     @media (max-width: 600px) {
       .lightbox-inner {
-        width: 96vw;
+        width: 78vw;
       }
       .lightbox-inner.vertical {
-        max-width: 96vw;
+        max-width: 78vw;
       }
       .lightbox-inner.horizontal {
-        max-width: 96vw;
+        max-width: 78vw;
+        aspect-ratio: 16/9;
       }
       .lightbox-close {
-        top: -32px;
+        top: -30px;
         font-size: 20px;
       }
     }

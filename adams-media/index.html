@@ -198,6 +198,10 @@
     @media (max-width: 600px) {
       .lightbox-inner {
         width: 78vw;
+        overflow: hidden;
+      }
+      .lightbox-inner #lightbox-iframe {
+        height: calc(100% + 56px);
       }
       .lightbox-inner.vertical {
         max-width: 78vw;
@@ -296,7 +300,6 @@
   <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
     <div class="lightbox-inner" id="lightbox-inner">
       <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
-      <iframe id="lightbox-iframe" src="" allow="autoplay" allowfullscreen></iframe>
       <div class="drive-block"></div>
     </div>
   </div>
@@ -312,9 +315,17 @@
     function openLightbox(src, orientation) {
       var overlay = document.getElementById('lightbox');
       var inner = document.getElementById('lightbox-inner');
-      var iframe = document.getElementById('lightbox-iframe');
-      inner.className = 'lightbox-inner ' + orientation;
+      // Remove any existing iframe so the new one is created within this gesture
+      var old = document.getElementById('lightbox-iframe');
+      if (old) old.remove();
+      var iframe = document.createElement('iframe');
+      iframe.id = 'lightbox-iframe';
       iframe.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
+      iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', '');
+      inner.className = 'lightbox-inner ' + orientation;
+      var driveBlock = inner.querySelector('.drive-block');
+      inner.insertBefore(iframe, driveBlock);
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -322,8 +333,8 @@
       if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
       var overlay = document.getElementById('lightbox');
       var iframe = document.getElementById('lightbox-iframe');
+      if (iframe) iframe.remove();
       overlay.classList.remove('active');
-      iframe.src = '';
       document.body.style.overflow = '';
     }
     document.addEventListener('keydown', function(e) {

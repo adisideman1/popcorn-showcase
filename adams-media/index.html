@@ -174,18 +174,7 @@
       border-radius: 10px;
       background: #000;
     }
-    /* Transparent overlay -- blocks the Drive link click without covering the video */
-    .drive-block {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 46px;
-      background: transparent;
-      z-index: 10;
-      pointer-events: all;
-      cursor: default;
-    }
+
     .lightbox-close {
       position: absolute;
       top: -40px;
@@ -305,7 +294,7 @@
   <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
     <div class="lightbox-inner" id="lightbox-inner">
       <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
-      <div class="drive-block"></div>
+
     </div>
   </div>
 
@@ -326,7 +315,6 @@
       var oldVideo = document.getElementById('lightbox-video');
       if (oldVideo) oldVideo.remove();
       inner.className = 'lightbox-inner ' + orientation;
-      var driveBlock = inner.querySelector('.drive-block');
       if (mode === 'upload') {
         // Native video -- one-tap autoplay within user gesture
         var vid = document.createElement('video');
@@ -335,8 +323,7 @@
         vid.setAttribute('playsinline', '');
         vid.setAttribute('controls', '');
         vid.setAttribute('autoplay', '');
-        driveBlock.style.display = 'none';
-        inner.insertBefore(vid, driveBlock);
+        inner.appendChild(vid);
         vid.play().catch(function(){});
       } else {
         var iframe = document.createElement('iframe');
@@ -344,8 +331,7 @@
         iframe.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
         iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
         iframe.setAttribute('allowfullscreen', '');
-        driveBlock.style.display = '';
-        inner.insertBefore(iframe, driveBlock);
+        inner.appendChild(iframe);
       }
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';

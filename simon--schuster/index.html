@@ -164,12 +164,17 @@
       max-width: 420px;
       aspect-ratio: 9/16;
     }
-    .lightbox-inner iframe {
+    .lightbox-inner iframe,
+    .lightbox-inner video {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       border: none;
       border-radius: 10px;
+      background: #000;
     }
+
     .lightbox-close {
       position: absolute;
       top: -40px;
@@ -180,6 +185,29 @@
       font-size: 28px;
       cursor: pointer;
       line-height: 1;
+    }
+    @media (max-width: 600px) {
+      .lightbox-inner {
+        width: 78vw;
+        overflow: hidden;
+      }
+      .lightbox-inner #lightbox-iframe {
+        height: calc(100% + 56px); /* clips Drive controls bar */
+      }
+      .lightbox-inner #lightbox-video {
+        height: 100%; /* native video -- no clipping needed */
+      }
+      .lightbox-inner.vertical {
+        max-width: 78vw;
+      }
+      .lightbox-inner.horizontal {
+        max-width: 78vw;
+        aspect-ratio: 16/9;
+      }
+      .lightbox-close {
+        top: -30px;
+        font-size: 20px;
+      }
     }
     .card-body {
       padding: 20px 22px 24px;
@@ -226,7 +254,7 @@
     <div class="video-grid video-grid-3">
       
     <div class="video-card video-card--vertical">
-      <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="openLightbox('https://drive.google.com/file/d/1W-mA5JJEA42BLZ_h3jqWXtdrDawhkQfR/preview', 'vertical')">
+      <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="handleVideoClick('https://drive.google.com/file/d/1W-mA5JJEA42BLZ_h3jqWXtdrDawhkQfR/preview', 'vertical', 'link')">
         <img src="https://drive.google.com/thumbnail?id=1W-mA5JJEA42BLZ_h3jqWXtdrDawhkQfR&sz=w1280" alt="Spy School thumbnail" />
         <div class="play-btn">&#9654;</div>
       </div>
@@ -237,7 +265,7 @@
     </div>
 
     <div class="video-card">
-      <div class="thumb-wrap" style="aspect-ratio:16/9" onclick="openLightbox('https://drive.google.com/file/d/1lI0UOTVpBh2-xDXdciSKExGn-6rBHCH3/preview', 'horizontal')">
+      <div class="thumb-wrap" style="aspect-ratio:16/9" onclick="handleVideoClick('https://drive.google.com/file/d/1lI0UOTVpBh2-xDXdciSKExGn-6rBHCH3/preview', 'horizontal', 'link')">
         <img src="https://drive.google.com/thumbnail?id=1lI0UOTVpBh2-xDXdciSKExGn-6rBHCH3&sz=w1280" alt="The Fourth Option thumbnail" />
         <div class="play-btn">&#9654;</div>
       </div>
@@ -248,7 +276,7 @@
     </div>
 
     <div class="video-card">
-      <div class="thumb-wrap" style="aspect-ratio:16/9" onclick="openLightbox('https://drive.google.com/file/d/1o402i3L2zFwAVBqjCbYqrp_4dqdCCzyE/preview', 'horizontal')">
+      <div class="thumb-wrap" style="aspect-ratio:16/9" onclick="handleVideoClick('https://drive.google.com/file/d/1o402i3L2zFwAVBqjCbYqrp_4dqdCCzyE/preview', 'horizontal', 'link')">
         <img src="https://drive.google.com/thumbnail?id=1o402i3L2zFwAVBqjCbYqrp_4dqdCCzyE&sz=w1280" alt="Winner Takes All thumbnail" />
         <div class="play-btn">&#9654;</div>
       </div>
@@ -266,7 +294,7 @@
   <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
     <div class="lightbox-inner" id="lightbox-inner">
       <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
-      <iframe id="lightbox-iframe" src="" allow="autoplay" allowfullscreen></iframe>
+
     </div>
   </div>
 
@@ -275,12 +303,36 @@
   </footer>
 
   <script>
-    function openLightbox(src, orientation) {
+    function handleVideoClick(src, orientation, mode) {
+      openLightbox(src, orientation, mode || 'link');
+    }
+    function openLightbox(src, orientation, mode) {
       var overlay = document.getElementById('lightbox');
       var inner = document.getElementById('lightbox-inner');
-      var iframe = document.getElementById('lightbox-iframe');
+      // Remove any existing media element
+      var oldIframe = document.getElementById('lightbox-iframe');
+      if (oldIframe) oldIframe.remove();
+      var oldVideo = document.getElementById('lightbox-video');
+      if (oldVideo) oldVideo.remove();
       inner.className = 'lightbox-inner ' + orientation;
-      iframe.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
+      if (mode === 'upload') {
+        // Native video -- one-tap autoplay within user gesture
+        var vid = document.createElement('video');
+        vid.id = 'lightbox-video';
+        vid.src = src;
+        vid.setAttribute('playsinline', '');
+        vid.setAttribute('controls', '');
+        vid.setAttribute('autoplay', '');
+        inner.appendChild(vid);
+        vid.play().catch(function(){});
+      } else {
+        var iframe = document.createElement('iframe');
+        iframe.id = 'lightbox-iframe';
+        iframe.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
+        iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', '');
+        inner.appendChild(iframe);
+      }
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -288,8 +340,10 @@
       if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
       var overlay = document.getElementById('lightbox');
       var iframe = document.getElementById('lightbox-iframe');
+      if (iframe) iframe.remove();
+      var vid = document.getElementById('lightbox-video');
+      if (vid) { vid.pause(); vid.remove(); }
       overlay.classList.remove('active');
-      iframe.src = '';
       document.body.style.overflow = '';
     }
     document.addEventListener('keydown', function(e) {

@@ -373,6 +373,14 @@
       document.getElementById('pw-gate').classList.add('hidden');
     }
 
+    function pauseOtherVideos(currentVideo) {
+      document.querySelectorAll('video').forEach(video => {
+        if (video !== currentVideo && !video.paused) {
+          video.pause();
+        }
+      });
+    }
+
     function loadVideo(el, src) {
       el.style.cursor = 'default';
       el.onclick = null;
@@ -383,6 +391,7 @@
       video.preload = 'auto';
       video.src = src;
       video.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;';
+      video.addEventListener('play', () => pauseOtherVideos(video));
       el.replaceChildren(video);
       video.play().catch(() => {});
     }

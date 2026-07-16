@@ -75,17 +75,16 @@
     /* GRID */
     .video-grid {
       display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 28px;
       margin-bottom: 28px;
     }
-    .video-grid-3 {
-      grid-template-columns: repeat(3, 1fr);
+    /* Preserve comfortable card widths on tablets, then stack on phones. */
+    @media (max-width: 900px) {
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    .video-grid-2 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    @media (max-width: 768px) {
-      .video-grid-3, .video-grid-2 { grid-template-columns: 1fr; }
+    @media (max-width: 600px) {
+      .video-grid { grid-template-columns: 1fr; }
     }
 
     /* CARD */
@@ -319,7 +318,7 @@
 
   <main>
     
-    <div class="video-grid video-grid-3">
+    <div class="video-grid">
       
     <div class="video-card video-card--vertical">
       <div class="thumb-wrap" style="aspect-ratio:9/16" onclick="handleVideoClick('https://media.popcorn.co/55d42230-9fc1-4e86-80bf-43b48c31858e/output/muxed_1784010709731_d71ed908.mp4', 'vertical', 'url')">
@@ -332,9 +331,6 @@
         
       </div>
     </div>
-    </div>
-    <div class="video-grid video-grid-2">
-      
     </div>
   </main>
 
@@ -354,7 +350,7 @@
     (function() {
       var gate = document.getElementById('pw-gate');
       if (!gate) return;
-      var pw = 'DougShapiro';
+      var pw = "popcorn";
       var input = document.getElementById('pw-input');
       var err = document.getElementById('pw-error');
       window.checkPw = function() {

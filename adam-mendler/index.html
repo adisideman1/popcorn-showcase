@@ -399,7 +399,9 @@
         vid.setAttribute('playsinline', '');
         vid.setAttribute('controls', '');
         // Keep one expansion control in the bottom player bar; suppress the duplicate picture-in-picture control.
-        vid.setAttribute('disablePictureInPicture', '');
+        vid.disablePictureInPicture = true;
+        vid.disableRemotePlayback = true;
+        vid.setAttribute('disablePictureInPicture', 'true');
         vid.setAttribute('controlsList', 'nodownload noremoteplayback');
         vid.setAttribute('autoplay', '');
         inner.appendChild(vid);

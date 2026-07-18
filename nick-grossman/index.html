@@ -196,9 +196,6 @@
         width: 78vw;
         overflow: hidden;
       }
-      .lightbox-inner #lightbox-iframe {
-        height: calc(100% + 56px); /* clips Drive controls bar */
-      }
       .lightbox-inner #lightbox-video {
         height: 100%; /* native video -- no clipping needed */
       }
@@ -386,42 +383,28 @@
       var overlay = document.getElementById('lightbox');
       var inner = document.getElementById('lightbox-inner');
       // Remove any existing media element
-      var oldIframe = document.getElementById('lightbox-iframe');
-      if (oldIframe) oldIframe.remove();
-      var oldVideo = document.getElementById('lightbox-video');
-      if (oldVideo) oldVideo.remove();
       inner.className = 'lightbox-inner ' + orientation;
-      if (mode === 'upload' || mode === 'url') {
-        // Native video -- one-tap autoplay within user gesture (upload = local file, url = direct CDN link)
-        var vid = document.createElement('video');
-        vid.id = 'lightbox-video';
-        vid.src = src;
-        vid.setAttribute('playsinline', '');
-        vid.setAttribute('controls', '');
-        // Keep one expansion control in the bottom player bar; suppress the duplicate picture-in-picture control.
-        vid.disablePictureInPicture = true;
-        vid.disableRemotePlayback = true;
-        vid.setAttribute('disablePictureInPicture', 'true');
-        vid.setAttribute('controlsList', 'nodownload noremoteplayback');
-        vid.setAttribute('autoplay', '');
-        inner.appendChild(vid);
-        vid.play().catch(function(){});
-      } else {
-        var iframe = document.createElement('iframe');
-        iframe.id = 'lightbox-iframe';
-        iframe.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=1';
-        iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
-        iframe.setAttribute('allowfullscreen', '');
-        inner.appendChild(iframe);
-      }
+      // Always use the native player. Leave only its standard bottom-bar
+      // fullscreen control; suppress PiP, casting, downloads, and provider pop-outs.
+      var vid = document.createElement('video');
+      vid.id = 'lightbox-video';
+      vid.src = src;
+      vid.setAttribute('playsinline', '');
+      vid.setAttribute('controls', '');
+      vid.disablePictureInPicture = true;
+      vid.disableRemotePlayback = true;
+      vid.setAttribute('disablePictureInPicture', 'true');
+      vid.setAttribute('disableRemotePlayback', 'true');
+      vid.setAttribute('controlsList', 'nodownload noremoteplayback nopictureinpicture');
+      vid.setAttribute('autoplay', '');
+      inner.appendChild(vid);
+      vid.play().catch(function(){});
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
     function closeLightbox(e) {
       if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
       var overlay = document.getElementById('lightbox');
-      var iframe = document.getElementById('lightbox-iframe');
-      if (iframe) iframe.remove();
       var vid = document.getElementById('lightbox-video');
       if (vid) { vid.pause(); vid.remove(); }
       overlay.classList.remove('active');

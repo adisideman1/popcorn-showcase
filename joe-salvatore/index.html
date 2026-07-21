@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joe Salvatore x Popcorn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #07090f;
+      color: #f0f2f8;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,9,15,0.92);
+      backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 24px 28px;
+      gap: 24px;
+    }
+    nav .client-logo img {
+      max-height: 120px;
+      max-width: 360px;
+      object-fit: contain;
+    }
+    nav .client-name-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: #E5A83B;
+    }
+    nav .powered-by {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    nav .powered-by span {
+      color: #E5A83B;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    nav .powered-by a img {
+      height: 22px;
+      object-fit: contain;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 60px 32px 80px;
+    }
+    h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      color: #E5A83B;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    /* GRID */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+    /* Preserve comfortable card widths on tablets, then stack on phones. */
+    @media (max-width: 900px) {
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 600px) {
+      .video-grid { grid-template-columns: 1fr; }
+    }
+
+    /* CARD */
+    .video-card {
+      background: #0e1018;
+      cursor: pointer;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(229,168,59,0.15);
+    }
+    .video-card:focus-visible { outline: 2px solid #E5A83B; outline-offset: 3px; }
+    .video-card--vertical {
+      max-width: 260px;
+      justify-self: center;
+    }
+    .thumb-wrap {
+      position: relative;
+      width: 100%;
+      cursor: pointer;
+      background: #161820;
+      overflow: hidden;
+    }
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.2s;
+    }
+    .thumb-wrap:hover img { opacity: 0.85; }
+    .first-frame-placeholder {
+      width: 100%;
+      height: 100%;
+      background: #161820;
+    }
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #E5A83B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #07090f;
+      box-shadow: 0 0 32px rgba(229,168,59,0.5);
+      pointer-events: none;
+    }
+    .thumb-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* LIGHTBOX */
+    .lightbox-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.88);
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-overlay.active {
+      display: flex;
+    }
+    .lightbox-inner {
+      position: relative;
+      width: 90vw;
+      max-height: 90vh;
+    }
+    .lightbox-inner.horizontal {
+      max-width: 960px;
+      aspect-ratio: 16/9;
+    }
+    .lightbox-inner.vertical {
+      max-width: 420px;
+      aspect-ratio: 9/16;
+    }
+    .lightbox-inner iframe,
+    .lightbox-inner video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+      background: #000;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    @media (max-width: 600px) {
+      .lightbox-inner {
+        width: 78vw;
+        overflow: hidden;
+      }
+      .lightbox-inner #lightbox-video {
+        height: 100%; /* native video -- no clipping needed */
+      }
+      .lightbox-inner.vertical {
+        max-width: 78vw;
+      }
+      .lightbox-inner.horizontal {
+        max-width: 78vw;
+        aspect-ratio: 16/9;
+      }
+      .lightbox-close {
+        top: -30px;
+        font-size: 20px;
+      }
+    }
+    .card-body {
+      padding: 20px 22px 24px;
+    }
+    .card-body h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #f0f2f8;
+      margin-bottom: 8px;
+    }
+    .deliverable-date {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: #E5A83B;
+    }
+    .card-body p {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: rgba(240,242,248,0.55);
+    }
+    .card-body .book-link {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #E5A83B;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .card-body .book-link:hover {
+      text-decoration: underline;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 0.85rem;
+      color: rgba(240,242,248,0.4);
+    }
+    footer a { color: #E5A83B; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* PASSWORD GATE */
+    .pw-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #07090f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+    .pw-gate.hidden { display: none; }
+    .pw-gate h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #E5A83B;
+    }
+    .pw-gate input {
+      width: 260px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(229,168,59,0.4);
+      background: #0e1018;
+      color: #f0f2f8;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+    .pw-gate input:focus {
+      border-color: #E5A83B;
+    }
+    .pw-gate button {
+      padding: 10px 28px;
+      border-radius: 8px;
+      border: none;
+      background: #E5A83B;
+      color: #07090f;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .pw-gate button:hover { opacity: 0.9; }
+    .pw-gate .pw-error {
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="client-name-text">Joe Salvatore</div>
+    <div class="powered-by">
+      <span>Powered by:</span>
+      <a href="https://popcorn.co" target="_blank">
+        <img src="../wordmark-dark.png" alt="Popcorn.co" />
+      </a>
+    </div>
+  </nav>
+
+  <div class="pw-gate" id="pw-gate"><h2>Enter Password</h2><input type="password" id="pw-input" placeholder="Password" /><button onclick="checkPw()">Enter</button><div class="pw-error" id="pw-error"></div></div>
+
+  <main>
+    <h1>Videos will appear here as they’re added.</h1>
+    <div class="video-grid">
+      
+    </div>
+  </main>
+
+  <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-inner" id="lightbox-inner">
+      <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
+
+    </div>
+  </div>
+
+  <footer>
+    Made with 🍿 <a href="https://popcorn.co" target="_blank">Popcorn.co</a>
+  </footer>
+
+  <script>
+    // Password gate
+    (function() {
+      var gate = document.getElementById('pw-gate');
+      if (!gate) return;
+      var pw = "popcorn";
+      var input = document.getElementById('pw-input');
+      var err = document.getElementById('pw-error');
+      window.checkPw = function() {
+        if (input.value === pw) {
+          gate.classList.add('hidden');
+          sessionStorage.setItem('pw_ok_' + location.pathname, '1');
+        } else {
+          err.textContent = 'Incorrect password';
+          input.value = '';
+        }
+      };
+      input.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPw(); });
+      if (sessionStorage.getItem('pw_ok_' + location.pathname) === '1') {
+        gate.classList.add('hidden');
+      } else {
+        input.focus();
+      }
+    })();
+
+    function handleVideoClick(src, orientation, mode) {
+      openLightbox(src, orientation, mode || 'link');
+    }
+    function openLightbox(src, orientation, mode) {
+      var overlay = document.getElementById('lightbox');
+      var inner = document.getElementById('lightbox-inner');
+      // Remove any existing media element
+      inner.className = 'lightbox-inner ' + orientation;
+      if (mode === 'drive-preview') {
+        // Google Drive files play through the supported embedded preview endpoint.
+        var frame = document.createElement('iframe');
+        frame.id = 'lightbox-video';
+        frame.src = src;
+        frame.title = 'Google Drive video preview';
+        frame.setAttribute('allow', 'autoplay; fullscreen');
+        frame.setAttribute('allowfullscreen', '');
+        inner.appendChild(frame);
+      } else {
+        // Direct video URLs use the native player. Leave only its standard
+        // bottom-bar fullscreen control; suppress PiP, casting, and downloads.
+        var vid = document.createElement('video');
+        vid.id = 'lightbox-video';
+        vid.src = src;
+        vid.setAttribute('playsinline', '');
+        vid.setAttribute('controls', '');
+        vid.disablePictureInPicture = true;
+        vid.disableRemotePlayback = true;
+        vid.setAttribute('disablePictureInPicture', 'true');
+        vid.setAttribute('disableRemotePlayback', 'true');
+        vid.setAttribute('controlsList', 'nodownload noremoteplayback nopictureinpicture');
+        vid.setAttribute('autoplay', '');
+        inner.appendChild(vid);
+        vid.play().catch(function(){});
+      }
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox(e) {
+      if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+      var overlay = document.getElementById('lightbox');
+      var media = document.getElementById('lightbox-video');
+      if (media) {
+        if (media.tagName === 'VIDEO') media.pause();
+        media.remove();
+      }
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+</body>
+</html>
